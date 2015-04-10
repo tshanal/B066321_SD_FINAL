@@ -9,8 +9,6 @@ class BigGroup:
         self.graph = graph
         self.num_ants = num_ants
         self.num_iterations = num_iterations
-      
-	#	self.Alpha=config.get('BigGroup', 'Alpha')
 	self.initConfigParser()
 	self.Alpha=self.config.getfloat('BigGroup', 'Alpha')
         self.reset()
