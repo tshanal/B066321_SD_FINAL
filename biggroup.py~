@@ -9,8 +9,6 @@ class BigGroup:
         self.graph = graph
         self.num_ants = num_ants
         self.num_iterations = num_iterations
-      
-	#	self.Alpha=config.get('BigGroup', 'Alpha')
 	self.initConfigParser()
 	self.Alpha=self.config.getfloat('BigGroup', 'Alpha')
         self.reset()
@@ -20,8 +18,8 @@ class BigGroup:
 	self.config.readfp(open('abc.ini')) 		
     
     def reset(self):
-        self.bpc = sys.maxint
-        self.bpv = None
+        self.optimalCostArray = sys.maxint
+        self.optimalPath = None
         self.bpm = None
         self.lbpi = 0
 
@@ -54,15 +52,15 @@ class BigGroup:
         print "Update called by %s" % (ant.ID,)
         self.ant_counter += 1
         self.avg_path_cost += ant.path_cost
-        if ant.path_cost < self.bpc:
-            self.bpc = ant.path_cost
+        if ant.path_cost < self.optimalCostArray:
+            self.optimalCostArray = ant.path_cost
             self.bpm = ant.path_mat
-            self.bpv = ant.path_vec
+            self.optimalPath = ant.path_vec
             self.lbpi = self.iter_counter
         if self.ant_counter == len(self.ants):
             self.avg_path_cost /= len(self.ants)
             print "Best: %s, %s, %s, %s" % (
-                self.bpv, self.bpc, self.iter_counter, self.avg_path_cost,)
+                self.optimalPath, self.optimalCostArray, self.iter_counter, self.avg_path_cost,)
 
 
     def done(self):
@@ -84,7 +82,7 @@ class BigGroup:
         for r in range(0, self.graph.num_nodes):
             for s in range(0, self.graph.num_nodes):
                 if r != s:
-                    delt_tau = self.bpm[r][s] / self.bpc
+                    delt_tau = self.bpm[r][s] / self.optimalCostArray
                     evaporation = (1 - self.Alpha) * self.graph.tau(r, s)
                     deposition = self.Alpha * delt_tau
                     self.graph.update_tau(r, s, evaporation + deposition)
