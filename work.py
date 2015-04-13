@@ -2,6 +2,10 @@ import math
 import random
 import ConfigParser
 
+# Work class is the majpr algorithmic class . 
+# Its the work that each Ant do for simlution .
+# The Ants can be started by passing the similuation object (colony) and starting node.
+
 class Work():
     def __init__(self, ID, start_node, colony):
         self.ID = ID
@@ -14,7 +18,7 @@ class Work():
       
         self.ntv = {}
         config = ConfigParser.ConfigParser()
-        config.readfp(open('abc.ini')) 
+        config.readfp(open('config.ini')) 
         self.path_cost =  config.getint('Work', 'path_cost')   
         self.Beta =  config.getfloat('Work', 'Beta')   
         self.Q0 =  config.getfloat('Work', 'Q0')   
@@ -26,7 +30,11 @@ class Work():
         for i in range(0, self.graph.num_nodes):
             self.path_mat.append([0] * self.graph.num_nodes)
 
-    #could this be simpler?
+    
+    # Run funtion iterate over all the nodes in graph and apply the state trastion rules on the Ants
+    # Each Ants find the new node to traverse , the path cost is updates , the path vector is append 
+    # Then each Ant updates the pheromones level by calling local_updating_rule over a path.
+    
     def run(self):
         graph = self.grouping.graph
         while not self.end():
@@ -43,7 +51,10 @@ class Work():
     def end(self):
         return not self.ntv
 
-
+   # state_transition_rule funtion takes the current position of Ant on the node  and returns the 
+   # the new position
+   # New postion depend on the Randon probality of taking the path. There are Two Explortions the Ants can have
+   
     def state_transition_rule(self, curr_node):
         graph = self.grouping.graph
         q = random.random()
@@ -83,7 +94,7 @@ class Work():
             raise Exception("max_node < 0")
         del self.ntv[max_node]
         return max_node
-
+    # This funtion updates pheromones levels
     def local_updating_rule(self, curr_node, next_node):
         #Update the pheromones on the tau matrix to represent transitions of the ants
         graph = self.grouping.graph
