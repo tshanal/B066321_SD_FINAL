@@ -23,11 +23,17 @@ def main(argv):
         iteration_count = 20
         Outer_Repetition = 1
     
-    			
-    stuff = pickle.load(open(argv[1], "r"))
+    if "pickled" in argv[1]:			
+    	stuff = pickle.load(open(argv[1], "r"))
+    elif "json" in argv[1]:
+	with open(argv[1]) as data_file:    
+    		stuff = json.load(data_file)
+    else : 
+	print "Invalid file name"		
     citiesArray = stuff[0]
     distanceMatrix = stuff[1]
     #why are we doing this?
+    # Distance/cost martix we get form file has cost for 13 places . if the number of names is less the smaller matix is needed.	
     if nodes_count < len(distanceMatrix):
         distanceMatrix = distanceMatrix[0:nodes_count]
         for i in range(0, nodes_count):

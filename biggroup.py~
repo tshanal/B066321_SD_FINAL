@@ -9,16 +9,17 @@ class BigGroup:
         self.graph = graph
         self.num_ants = num_ants
         self.num_iterations = num_iterations
-	self.initConfigParser()
-	self.Alpha=self.config.getfloat('BigGroup', 'Alpha')
+        self.initConfigParser()
+        self.Alpha=self.config.getfloat('BigGroup', 'Alpha')
         self.reset()
     
     def initConfigParser(self):
-	self.config = ConfigParser.ConfigParser()   
-	self.config.readfp(open('abc.ini')) 		
+        self.config = ConfigParser.ConfigParser()
+        self.config.readfp(open('abc.ini'))         
     
     def reset(self):
-        self.optimalCostArray = sys.maxint
+        #self.optimalCostArray = sys.maxint
+        self.optimalCostArray = sys.maxsize
         self.optimalPath = None
         self.bpm = None
         self.lbpi = 0
@@ -49,7 +50,7 @@ class BigGroup:
         return self.iter_counter
 
     def update(self, ant):
-        print "Update called by %s" % (ant.ID,)
+        print ("Update called by %s" % (ant.ID,))
         self.ant_counter += 1
         self.avg_path_cost += ant.path_cost
         if ant.path_cost < self.optimalCostArray:
@@ -59,8 +60,8 @@ class BigGroup:
             self.lbpi = self.iter_counter
         if self.ant_counter == len(self.ants):
             self.avg_path_cost /= len(self.ants)
-            print "Best: %s, %s, %s, %s" % (
-                self.optimalPath, self.optimalCostArray, self.iter_counter, self.avg_path_cost,)
+            print ("Best: optimalPath %s \n optimalCostArray %s \n iter_counter %s \n avg_path_cost %s" % (
+                self.optimalPath, self.optimalCostArray, self.iter_counter, self.avg_path_cost,))
 
 
     def done(self):
@@ -72,6 +73,15 @@ class BigGroup:
         for i in range(0, self.num_ants):
             ant = Work(i, random.randint(0, self.graph.num_nodes - 1), self)
             ants.append(ant)
+
+        return ants
+    
+    def c_workers_test(self,placeSeed):
+        self.reset()
+        ants = []
+        for i in range(0, self.num_ants):
+            self.ant = Work(i, placeSeed , self)
+            ants.append(self.ant)
 
         return ants
  
@@ -89,7 +99,7 @@ class BigGroup:
 
 class GraphBit:
     def __init__(self, num_nodes, delta_mat, tau_mat=None):
-        print len(delta_mat)
+        print (len(delta_mat))
         if len(delta_mat) != num_nodes:
             raise Exception("len(delta) != num_nodes")
         self.num_nodes = num_nodes
@@ -114,8 +124,8 @@ class GraphBit:
     def reset_tau(self):
         avg = self.average_delta()
         self.tau0 = 1.0 / (self.num_nodes * 0.5 * avg)
-        print "Average = %s" % (avg,)
-        print "Tau0 = %s" % (self.tau0)
+        print ("Average = %s" % (avg,))
+        print ("Tau0 = %s" % (self.tau0))
         for r in range(0, self.num_nodes):
             for s in range(0, self.num_nodes):
                 self.tau_mat[r][s] = self.tau0
