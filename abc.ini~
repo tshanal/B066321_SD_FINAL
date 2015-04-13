@@ -1,8 +1,0 @@
-[Work]
-path_cost=0
-Beta=1.0
-Q0=0.5
-Rho=0.99
-
-[BigGroup]
-Alpha=0.1
